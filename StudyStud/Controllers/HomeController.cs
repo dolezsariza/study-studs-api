@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace StudyStud.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("Home")]
     public class HomeController : ControllerBase
     {
 

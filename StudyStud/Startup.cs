@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using StudyStud.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace StudyStud
 {
