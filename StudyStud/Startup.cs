@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using StudyStud.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using StudyStud.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudyStud
 {
@@ -30,7 +33,11 @@ namespace StudyStud
         {
             services.ConfigureCors();
             services.ConfigureIISIntegration();
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<StudyDbContext>();
 
+            services.AddDbContext<StudyDbContext>(opt =>
+               opt.UseInMemoryDatabase("UserList"));
             services.AddControllers();
         }
 
@@ -53,7 +60,7 @@ namespace StudyStud
             });
 
             app.UseRouting();
-
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
