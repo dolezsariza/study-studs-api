@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using StudyStud.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Identity;
+using StudyStud.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace StudyStud
 {
@@ -32,6 +35,9 @@ namespace StudyStud
             services.ConfigureIISIntegration();
 
             services.AddControllers();
+            services.AddDbContext<StudyDbContext>(opt => opt.UseInMemoryDatabase("Users"));
+            services.AddIdentity<User, IdentityRole>()
+                .AddEntityFrameworkStores<StudyDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,6 +50,8 @@ namespace StudyStud
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseCors("CorsPolicy");
 
