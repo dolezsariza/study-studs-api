@@ -42,7 +42,6 @@ namespace StudyStud.Controllers
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
-                Console.WriteLine("Nem jó a jelszó :) ");
             }
 
             return HttpStatusCode.Unauthorized;
