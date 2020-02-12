@@ -21,18 +21,26 @@ namespace StudyStud.Controllers
             _userManager = userManager;
         }
         [HttpPost]
-        public async Task<HttpStatusCode> Post([FromBody]Object json)
+        public async Task<IActionResult> Post([FromBody]Object json)
         {
             JObject jObject = JObject.Parse(json.ToString());
             var user = new User { UserName = jObject.GetValue("userName").ToString(), Email = jObject.GetValue("email").ToString() };
             var result = await _userManager.CreateAsync(user, jObject.GetValue("password").ToString());
             if (result.Succeeded)
             {
-                return HttpStatusCode.Created;
-            } else
-            {
-                return HttpStatusCode.Conflict;
+                return Created(Request.Path, user);
             }
+
+            return Conflict();
+            //foreach (var error in result.Errors)
+            //{
+            //    switch (error.Code)
+            //    {
+            //        case :
+            //    }
+
+            //}
+            //return 
         }
     }
 }
