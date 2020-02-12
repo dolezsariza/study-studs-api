@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace StudyStud.Models
 {
-    public class StudyDbContext : IdentityDbContext
+    public class StudyDbContext : IdentityDbContext<User>
     {
         public StudyDbContext(DbContextOptions<StudyDbContext> options):base(options){}
 

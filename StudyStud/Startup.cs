@@ -36,7 +36,7 @@ namespace StudyStud
 
             services.AddControllers();
             services.AddDbContext<StudyDbContext>(opt => opt.UseInMemoryDatabase("UsersDatabase"));
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<StudyDbContext>();
         }
 
