@@ -35,8 +35,8 @@ namespace StudyStud
             services.ConfigureIISIntegration();
 
             services.AddControllers();
-            services.AddDbContext<StudyDbContext>(opt => opt.UseInMemoryDatabase("Users"));
-            services.AddIdentity<User, IdentityRole>()
+            services.AddDbContext<StudyDbContext>(opt => opt.UseInMemoryDatabase("UsersDatabase"));
+            services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<StudyDbContext>();
         }
 

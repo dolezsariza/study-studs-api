@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StudyStud.Models
 {
-    public class User : IdentityUser
+    public class MyUser : IdentityUser
     {
     }
 }

@@ -15,8 +15,8 @@ namespace StudyStud.Controllers
     [ApiController]
     public class RegisterController : ControllerBase
     {
-        private readonly UserManager<User> _userManager;
-        public RegisterController(UserManager<User> userManager)
+        private readonly UserManager<IdentityUser> _userManager;
+        public RegisterController(UserManager<IdentityUser> userManager)
         {
             _userManager = userManager;
         }
@@ -24,13 +24,15 @@ namespace StudyStud.Controllers
         public async Task<HttpStatusCode> Post([FromBody]Object json)
         {
             JObject jObject = JObject.Parse(json.ToString());
-            var user = new User { UserName = jObject.GetValue("userName").ToString(), Email = jObject.GetValue("email").ToString() };
+            var user = new IdentityUser { UserName = jObject.GetValue("userName").ToString(), Email = jObject.GetValue("email").ToString() };
             var result = await _userManager.CreateAsync(user, jObject.GetValue("password").ToString());
             if (result.Succeeded)
             {
                 return HttpStatusCode.Created;
+            } else
+            {
+                return HttpStatusCode.Conflict;
             }
-            return HttpStatusCode.Conflict;
         }
     }
 }
