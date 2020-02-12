@@ -25,7 +25,7 @@ namespace StudyStud.Controllers
         }
 
         [HttpPost]
-        public async Task<HttpStatusCode> Login(Login login)
+        public async Task<IActionResult> Login(Login login)
         {
             if (ModelState.IsValid)
             {
@@ -34,13 +34,13 @@ namespace StudyStud.Controllers
 
                 if (result.Succeeded)
                 {
-                    return HttpStatusCode.OK;
+                    return Ok();
                 }
 
                 ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
             }
 
-            return HttpStatusCode.Unauthorized;
+            return Unauthorized();
         }
     }
 }
