@@ -33,14 +33,10 @@ namespace StudyStud
         {
             services.ConfigureCors();
             services.ConfigureIISIntegration();
-            services.AddIdentity<User, IdentityRole>()
-                .AddEntityFrameworkStores<StudyDbContext>();
 
-            services.AddDbContext<StudyDbContext>(opt =>
-               opt.UseInMemoryDatabase("UserList"));
             services.AddControllers();
             services.AddDbContext<StudyDbContext>(opt => opt.UseInMemoryDatabase("UsersDatabase"));
-            services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<StudyDbContext>();
         }
 
