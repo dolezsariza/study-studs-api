@@ -39,6 +39,9 @@ namespace StudyStud
             services.AddDbContext<StudyDbContext>(opt =>
                opt.UseInMemoryDatabase("UserList"));
             services.AddControllers();
+            services.AddDbContext<StudyDbContext>(opt => opt.UseInMemoryDatabase("UsersDatabase"));
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<StudyDbContext>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +54,8 @@ namespace StudyStud
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseCors("CorsPolicy");
 
