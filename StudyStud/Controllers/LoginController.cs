@@ -10,7 +10,7 @@ using System.Net;
 
 namespace StudyStud.Controllers
 {
-    [Route("api/login")]
+    [Route("login")]
     [ApiController]
     public class LoginController : ControllerBase
     {

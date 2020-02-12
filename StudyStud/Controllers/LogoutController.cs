@@ -9,7 +9,7 @@ using StudyStud.Models;
 
 namespace StudyStud.Controllers
 {
-    [Route("api/logout")]
+    [Route("logout")]
     [ApiController]
     public class LogoutController : ControllerBase
     {
