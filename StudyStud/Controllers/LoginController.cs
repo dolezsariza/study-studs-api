@@ -22,10 +22,6 @@ namespace StudyStud.Controllers
         {
             _context = context;
             _signInManager = signInManager;
-            User user = new User();
-            user.Email = "abc@abc.com";
-            user.PasswordHash = "wronghash";
-            _context.UserList.Add(user);
         }
 
         [HttpPost]
@@ -34,7 +30,7 @@ namespace StudyStud.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _signInManager.PasswordSignInAsync(
-                   login.Email, login.Password, false, false);
+                   login.Username, login.Password, false, false);
 
                 if (result.Succeeded)
                 {
