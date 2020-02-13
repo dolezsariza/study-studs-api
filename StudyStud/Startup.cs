@@ -35,7 +35,7 @@ namespace StudyStud
             services.ConfigureIISIntegration();
 
             services.AddControllers();
-            services.AddDbContext<StudyDbContext>(opt => opt.UseInMemoryDatabase("UsersDatabase"));
+            services.AddDbContextPool<StudyDbContext>(opt => opt.UseSqlServer(Configuration.GetConnectionString("StudyDBConnection")));
             services.AddIdentity<User, IdentityRole>(opt =>
             {
                 opt.Password.RequiredLength = 4;
