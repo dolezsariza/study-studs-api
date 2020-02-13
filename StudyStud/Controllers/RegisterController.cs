@@ -15,20 +15,23 @@ namespace StudyStud.Controllers
     [ApiController]
     public class RegisterController : ControllerBase
     {
+        private readonly StudyDbContext _context;
+
         private readonly UserManager<User> _userManager;
-        public RegisterController(UserManager<User> userManager)
+        public RegisterController(UserManager<User> userManager, StudyDbContext context)
         {
+            _context = context;
             _userManager = userManager;
         }
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]Object json)
+        public async Task<IActionResult> Register([FromBody]Object json)
         {
             JObject jObject = JObject.Parse(json.ToString());
             var user = new User { UserName = jObject.GetValue("userName").ToString(), Email = jObject.GetValue("email").ToString() };
             var result = await _userManager.CreateAsync(user, jObject.GetValue("password").ToString());
             if (result.Succeeded)
             {
-                return Created(Request.Path, user);
+                return Created("", user);
             }
 
             return StatusCode(406, string.Join("\n", result.Errors.Select(x => x.Description)));
