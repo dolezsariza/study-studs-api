@@ -27,20 +27,16 @@ namespace StudyStud.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(Login login)
         {
-            if (ModelState.IsValid)
+            
+            var result = await _signInManager.PasswordSignInAsync(
+                login.Username, login.Password, false, false);
+
+            if (result.Succeeded)
             {
-                var result = await _signInManager.PasswordSignInAsync(
-                   login.Username, login.Password, false, false);
-
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }
-
-                ModelState.AddModelError(string.Empty, "Invalid Login Attempt");
+                return Ok();
             }
 
-            return Unauthorized();
+            return Unauthorized("Wrong email or password");
         }
     }
 }
