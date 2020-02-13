@@ -31,16 +31,7 @@ namespace StudyStud.Controllers
                 return Created(Request.Path, user);
             }
 
-            return Conflict();
-            //foreach (var error in result.Errors)
-            //{
-            //    switch (error.Code)
-            //    {
-            //        case :
-            //    }
-
-            //}
-            //return 
+            return StatusCode(406, string.Join("\n", result.Errors));
         }
     }
 }
