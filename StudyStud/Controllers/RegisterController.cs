@@ -31,7 +31,7 @@ namespace StudyStud.Controllers
                 return Created(Request.Path, user);
             }
 
-            return StatusCode(406, string.Join("\n", result.Errors));
+            return StatusCode(406, string.Join("\n", result.Errors.Select(x => x.Description)));
         }
     }
 }
