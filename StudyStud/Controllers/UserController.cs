@@ -20,10 +20,10 @@ namespace StudyStud.Controllers
             _context = context;
         }
 
-        [HttpGet("{username}")]
-        public async Task<IActionResult> GetProfile(string username)
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetProfile(string userId)
         {
-            var user = await _context.UserList.SingleOrDefaultAsync(user => user.UserName == username);
+            var user = await _context.UserList.SingleOrDefaultAsync(user => user.Id == userId);
             Profile profile = new Profile()
             {
                 FirstName = user.FirstName,
@@ -38,19 +38,19 @@ namespace StudyStud.Controllers
             return Ok(profile);
         }
 
-        [HttpPut("{username}")]
-        public async Task<IActionResult> UpdateProfile(string username, [FromBody]Object json)
+        [HttpPut("{userId}")]
+        public async Task<IActionResult> UpdateProfile(string userId, [FromBody]User user)
         {
-            JObject jObject = JObject.Parse(json.ToString());
-            var user = await _context.UserList.SingleOrDefaultAsync(user => user.UserName == username);
+            
+            var nuser = await _context.UserList.SingleOrDefaultAsync(user => user.Id == userId);
 
-            user.FirstName = jObject.GetValue("FirstName").ToString();
-            user.LastName = jObject.GetValue("LastName").ToString();
-            user.NickName = jObject.GetValue("NickName").ToString();
-            user.Introduction = jObject.GetValue("Introduction").ToString();
-            user.Interests = jObject.GetValue("Interests").ToString();
-            user.School = jObject.GetValue("School").ToString();
-            user.City = jObject.GetValue("City").ToString();
+            nuser.FirstName = user.FirstName;
+            nuser.LastName = user.LastName;
+            nuser.NickName = user.NickName;
+            nuser.Introduction = user.Introduction;
+            nuser.Interests = user.Interests;
+            nuser.School = user.School;
+            nuser.City = user.City;
 
             try
             {
@@ -65,10 +65,10 @@ namespace StudyStud.Controllers
            
         }
 
-        [HttpDelete("{username}")]
-        public async Task<IActionResult> DeleteProfile(string username)
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteProfile(string userId)
         {
-            var user = await _context.UserList.SingleOrDefaultAsync(user => user.UserName == username);
+            var user = await _context.UserList.SingleOrDefaultAsync(user => user.Id == userId);
             _context.UserList.Remove(user);
             try
             {
