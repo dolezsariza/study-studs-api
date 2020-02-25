@@ -12,7 +12,7 @@ namespace StudyStudTests
     [TestFixture]
     class LoginControllerTests
     {
-        SignInManager<User> _signInManager;
+        UserManager<User> _userManager;
         StudyDbContext _studyDbContext;
         SignInResult signInResult;
         LoginController _loginController;
@@ -21,9 +21,9 @@ namespace StudyStudTests
         [SetUp]
         public void Setup()
         {
-            _signInManager = Substitute.For<FakeSignInManager>();
+            _userManager = Substitute.For<FakeUserManager>();
             _studyDbContext = Substitute.For<StudyDbContext>(new DbContextOptions<StudyDbContext>());
-            _loginController = new LoginController(_signInManager, _studyDbContext);
+            _loginController = new LoginController(_studyDbContext, _userManager);
             _login = new Login();
             _login.Username = "Username";
             _login.Password = "Password69!";
@@ -32,9 +32,7 @@ namespace StudyStudTests
         [Test]
         public void TestLoginIsSuccessful()
         {
-            signInResult = SignInResult.Success;
-            _signInManager.PasswordSignInAsync("Username", "Password69!", false, false).Returns(signInResult);
-
+            //todo
             var expected = new OkResult();
             var actual = _loginController.Login(_login).Result;
 
@@ -45,7 +43,7 @@ namespace StudyStudTests
         public void TestLoginIsFailed()
         {
             signInResult = SignInResult.Failed;
-            _signInManager.PasswordSignInAsync("Username", "Password69!", false, false).Returns(signInResult);
+           // _signInManager.PasswordSignInAsync("Username", "Password69!", false, false).Returns(signInResult);
 
             var expected = new UnauthorizedObjectResult(new UnauthorizedResult());
             var actual = _loginController.Login(_login).Result;
