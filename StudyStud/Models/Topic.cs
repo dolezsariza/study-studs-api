@@ -11,7 +11,7 @@ namespace StudyStud.Models
         [Key]
         public int Id { get; set; }
         public List<Post> Posts { get; }
-        public string OwnerId { get; }
+        public User Owner { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
 
@@ -22,7 +22,7 @@ namespace StudyStud.Models
 
         public Topic(User owner, string title, string description)
         {
-            OwnerId = owner.Id;
+            Owner = owner;
             Posts = new List<Post>();
             Title = title;
             Description = description;

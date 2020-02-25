@@ -9,6 +9,10 @@
     <Compile Remove="Migrations\20200224135235_UserIdString.Designer.cs" />
     <Compile Remove="Migrations\20200225090323_TopicPost.cs" />
     <Compile Remove="Migrations\20200225090323_TopicPost.Designer.cs" />
+    <Compile Remove="Migrations\20200225094005_TopicPost.cs" />
+    <Compile Remove="Migrations\20200225094005_TopicPost.Designer.cs" />
+    <Compile Remove="Migrations\20200225094315_TopicPost.cs" />
+    <Compile Remove="Migrations\20200225094315_TopicPost.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

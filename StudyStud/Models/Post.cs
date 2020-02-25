@@ -10,8 +10,8 @@ namespace StudyStud.Models
     {
         [Key]
         public int Id { get; set; }
-        public string OwnerId { get; }
-        public Topic Topic { get; }
+        public User Owner { get; set; }
+        public Topic Topic { get; set; }
         public string Title { get; set; }
         public string Message { get; set; }
 
@@ -22,7 +22,7 @@ namespace StudyStud.Models
 
         public Post(User owner, Topic topic, string title, string message)
         {
-            OwnerId = owner.Id;
+            Owner = owner;
             Topic = topic;
             Title = title;
             Message = message;
