@@ -27,9 +27,8 @@ namespace StudyStud.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(Login login)
         {
-            
             var result = await _signInManager.PasswordSignInAsync(
-                login.Username, login.Password, false, false);
+                login.Username, login.Password, true, false);
 
             if (result.Succeeded)
             {
