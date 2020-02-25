@@ -19,5 +19,7 @@ namespace StudyStud.Models
         }
 
         public DbSet<User> UserList { get; set; }
+        public DbSet<Topic> TopicList { get; set; }
+        public DbSet<Post> PostList { get; set; }
     }
 }

@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200224135235_UserIdString.cs" />
+    <Compile Remove="Migrations\20200224135235_UserIdString.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.1" />
