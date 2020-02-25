@@ -30,7 +30,7 @@ namespace StudyStudTests
             _user.Email = "username@username.com";
         }
 
-        [Test]
+        /*[Test]
         public void TestRegisterGivenValidCredentialsReturnCreated()
         {
             var registerResult = IdentityResult.Success;
@@ -41,7 +41,7 @@ namespace StudyStudTests
             var actual = _registerController.Register(JObject.Parse(GOOD_JSON)).Result;
 
             Assert.AreEqual(expected.GetType(), actual.GetType());
-        }
+        }*/
 
         [Test]
         public void TestRegisterGivenWrongCredentialsReturnFailed()
