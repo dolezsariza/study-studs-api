@@ -31,7 +31,14 @@ namespace StudyStud
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.ConfigureCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                builder =>
+                {
+                    builder.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+                });
+            });
             services.ConfigureIISIntegration();
 
             services.AddControllers();
@@ -44,6 +51,14 @@ namespace StudyStud
                 opt.Password.RequireUppercase = true;
             })
                 .AddEntityFrameworkStores<StudyDbContext>();
+
+            services.ConfigureApplicationCookie(options=>
+            {
+                options.Cookie.Name = "credentials";
+                options.ExpireTimeSpan = TimeSpan.FromHours(24);
+                options.Cookie.Domain = "localhost";
+                options.LoginPath = "/login";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,7 +72,6 @@ namespace StudyStud
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
-            app.UseAuthentication();
 
             app.UseCors("CorsPolicy");
 
