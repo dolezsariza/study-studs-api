@@ -68,8 +68,22 @@ namespace StudyStud.Controllers
         [HttpDelete("{userId}")]
         public async Task<IActionResult> DeleteProfile(string userId)
         {
-            var user = await _context.UserList.SingleOrDefaultAsync(user => user.Id == userId);
+            User user = await _context.UserList.SingleOrDefaultAsync(user => user.Id == userId);
+            List<Topic> topicsOfUser = await _context.TopicList.Where(user => user.Owner.Id == userId).ToListAsync();
+            List<Post> postsOfUser = await _context.PostList.Where(user => user.Owner.Id == userId).ToListAsync();
+            
+            foreach (Topic topic in topicsOfUser)
+            {
+                topic.Owner = null;
+            }
+
+            foreach (Post post in postsOfUser)
+            {
+                post.Owner = null;
+            }
+
             _context.UserList.Remove(user);
+            
             try
             {
                 await _context.SaveChangesAsync();
