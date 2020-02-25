@@ -81,5 +81,29 @@ namespace StudyStud.Controllers
                 return StatusCode(204);
             }
         }
+
+        [HttpGet("{userId}/topics")]
+        public async Task<IActionResult> ListUsersTopics(string userId)
+        {
+            List<Topic> topicsOfUser = await _context.TopicList.Where(user => user.Owner.Id == userId).ToListAsync();
+
+            return Ok(topicsOfUser);
+        }
+
+        [HttpGet("{userId}/posts")]
+        public async Task<IActionResult> ListUsersPosts(string userId)
+        {
+            List<Post> postsOfUser = await _context.PostList.Where(user => user.Owner.Id == userId).ToListAsync();
+            
+            return Ok(postsOfUser);
+        }
+
+        [HttpGet("{userId}/{topicId}/posts")]
+        public async Task<IActionResult> ListUsersPostsInTopic(string userId,int topicId)
+        {
+            List<Post> postsOfTopic = await _context.PostList.Where(post => post.Topic.Id == topicId && post.Owner.Id == userId).ToListAsync();
+
+            return Ok(postsOfTopic);
+        }
     }
 }
