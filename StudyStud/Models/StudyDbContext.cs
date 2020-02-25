@@ -9,7 +9,8 @@ namespace StudyStud.Models
 {
     public class StudyDbContext : IdentityDbContext<User>
     {
-        public StudyDbContext(DbContextOptions<StudyDbContext> options):base(options){}
+        public StudyDbContext(DbContextOptions<StudyDbContext> options):base(options){
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

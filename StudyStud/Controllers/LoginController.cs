@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using StudyStud.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
+using System.Security.Claims;
 
 namespace StudyStud.Controllers
 {
@@ -15,28 +16,36 @@ namespace StudyStud.Controllers
     public class LoginController : ControllerBase
     {
         private readonly StudyDbContext _context;
+        private readonly UserManager<User> _userManager;
 
-        private readonly SignInManager<User> _signInManager;
-
-        public LoginController(SignInManager<User> signInManager, StudyDbContext context)
+        public LoginController(StudyDbContext context, UserManager<User> userManager)
         {
+            _userManager = userManager;
             _context = context;
-            _signInManager = signInManager;
         }
 
         [HttpPost]
         public async Task<IActionResult> Login(Login login)
         {
-            
-            var result = await _signInManager.PasswordSignInAsync(
-                login.Username, login.Password, false, false);
-
-            if (result.Succeeded)
+            var user = await _userManager.FindByNameAsync(login.Username);
+            if(user == null)
             {
-                return Ok();
+                return BadRequest("Wrong username or password");
             }
+            var result = await _userManager.CheckPasswordAsync(
+                user, login.Password);
 
-            return Unauthorized("Wrong email or password");
+            if (result)
+            {
+                var claims = new ClaimsIdentity(new[]
+                {
+                    new Claim("id", user.Id),
+                    new Claim("username", user.UserName),
+                    new Claim("email", user.Email)
+                });
+                return Ok(claims.Claims.Where(c => c.Type == "id").Select(c => c.Value));
+            }
+            return BadRequest("Wrong username or password");
         }
     }
 }
