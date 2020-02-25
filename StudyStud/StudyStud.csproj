@@ -13,6 +13,8 @@
     <Compile Remove="Migrations\20200225094005_TopicPost.Designer.cs" />
     <Compile Remove="Migrations\20200225094315_TopicPost.cs" />
     <Compile Remove="Migrations\20200225094315_TopicPost.Designer.cs" />
+    <Compile Remove="Migrations\20200225095618_FixedDB.cs" />
+    <Compile Remove="Migrations\20200225095618_FixedDB.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
