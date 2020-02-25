@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 
 namespace StudyStudTests
 {
-    class FakeUserManager : UserManager<User>
+    public class FakeUserManager : UserManager<User>
     {
         public FakeUserManager()
             : base(Substitute.For<IUserStore<User>>(),
