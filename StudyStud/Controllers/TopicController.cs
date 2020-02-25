@@ -89,9 +89,34 @@ namespace StudyStud.Controllers
             try
             {
                 Topic topic = await _context.TopicList.SingleOrDefaultAsync(topic => topic.Id == topicId);
+
                 if (topic.Owner.Id == userId)
                 {
                     _context.TopicList.Remove(topic);
+                    await _context.SaveChangesAsync();
+                    return Ok();
+                } else
+                {
+                    return Unauthorized();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                return StatusCode(406);
+            }
+        }
+
+        [HttpDelete("{topicId}/{postId}")]
+        public async Task<IActionResult> DeletePost(int postId, string userId)
+        {
+            try
+            {
+                Post post = await _context.PostList.SingleOrDefaultAsync(post => post.Id == postId);
+
+                if (post.Owner.Id == userId)
+                {
+                    _context.PostList.Remove(post);
                     await _context.SaveChangesAsync();
                     return Ok();
                 } else
