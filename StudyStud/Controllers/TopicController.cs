@@ -86,9 +86,9 @@ namespace StudyStud.Controllers
         }
 
         [HttpDelete("{topicId}")]
-        public async Task<IActionResult> DeleteTopic(int topicId, [FromBody]JObject user)
+        public async Task<IActionResult> DeleteTopic(int topicId, [FromBody]Object user)
         {
-            string userId = user.GetValue("UserId").ToString();
+            string userId = JObject.Parse(user.ToString()).GetValue("UserId").ToString();
             try
             {
                 Topic topic = await _context.TopicList.SingleOrDefaultAsync(topic => topic.Id == topicId);
@@ -113,9 +113,9 @@ namespace StudyStud.Controllers
         }
 
         [HttpDelete("{topicId}/{postId}")]
-        public async Task<IActionResult> DeletePost(int postId, [FromBody]JObject user)
+        public async Task<IActionResult> DeletePost(int postId, [FromBody]Object user)
         {
-            string userId = user.GetValue("UserId").ToString();
+            string userId = JObject.Parse(user.ToString()).GetValue("UserId").ToString();
 
             try
             {
