@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using StudyStud.Models;
 using System;
 using System.Collections.Generic;
@@ -85,14 +86,17 @@ namespace StudyStud.Controllers
         }
 
         [HttpDelete("{topicId}")]
-        public async Task<IActionResult> DeleteTopic(int topicId, string userId)
+        public async Task<IActionResult> DeleteTopic(int topicId, [FromBody]JObject user)
         {
+            string userId = user.GetValue("UserId").ToString();
             try
             {
                 Topic topic = await _context.TopicList.SingleOrDefaultAsync(topic => topic.Id == topicId);
 
                 if (topic.OwnerId == userId)
                 {
+                    List<Post> posts = await _context.PostList.Where(post => post.TopicID == topicId).ToListAsync();
+                    _context.PostList.RemoveRange(posts);
                     _context.TopicList.Remove(topic);
                     await _context.SaveChangesAsync();
                     return Ok();
@@ -109,8 +113,10 @@ namespace StudyStud.Controllers
         }
 
         [HttpDelete("{topicId}/{postId}")]
-        public async Task<IActionResult> DeletePost(int postId, string userId)
+        public async Task<IActionResult> DeletePost(int postId, [FromBody]JObject user)
         {
+            string userId = user.GetValue("UserId").ToString();
+
             try
             {
                 Post post = await _context.PostList.SingleOrDefaultAsync(post => post.Id == postId);
