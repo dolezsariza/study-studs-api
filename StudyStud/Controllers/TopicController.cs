@@ -41,6 +41,8 @@ namespace StudyStud.Controllers
         {
             try
             {
+                User owner = await _context.UserList.SingleOrDefaultAsync(user => user.Id == topic.OwnerId);
+                topic.OwnerName = owner.UserName;
                 _context.TopicList.Add(topic);
                 await _context.SaveChangesAsync();
                 return Ok();
@@ -73,6 +75,8 @@ namespace StudyStud.Controllers
         {
             try
             {
+                User owner = await _context.UserList.SingleOrDefaultAsync(user => user.Id == post.OwnerId);
+                post.OwnerName = owner.UserName;
                 post.TopicID = topicId;
                 _context.PostList.Add(post);
                 await _context.SaveChangesAsync();
