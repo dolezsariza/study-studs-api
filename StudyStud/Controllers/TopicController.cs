@@ -40,7 +40,8 @@ namespace StudyStud.Controllers
         {
             try
             {
-                await _context.TopicList.AddAsync(topic);
+                _context.TopicList.Add(topic);
+                await _context.SaveChangesAsync();
                 return Ok();
             }
             catch (Exception e)
@@ -56,6 +57,7 @@ namespace StudyStud.Controllers
             try
             {
                 Topic topic = await _context.TopicList.SingleOrDefaultAsync(topic => topic.Id == topicId);
+                topic.Posts = await _context.PostList.Where(post => post.TopicID == topicId).ToListAsync();
                 return Ok(topic);
             }
             catch (Exception e)
@@ -70,8 +72,7 @@ namespace StudyStud.Controllers
         {
             try
             {
-                Topic topic = await _context.TopicList.SingleOrDefaultAsync(topic => topic.Id == topicId);
-                post.Topic = topic;
+                post.TopicID = topicId;
                 _context.PostList.Add(post);
                 await _context.SaveChangesAsync();
                 return Ok();
@@ -90,7 +91,7 @@ namespace StudyStud.Controllers
             {
                 Topic topic = await _context.TopicList.SingleOrDefaultAsync(topic => topic.Id == topicId);
 
-                if (topic.Owner.Id == userId)
+                if (topic.OwnerId == userId)
                 {
                     _context.TopicList.Remove(topic);
                     await _context.SaveChangesAsync();
@@ -114,7 +115,7 @@ namespace StudyStud.Controllers
             {
                 Post post = await _context.PostList.SingleOrDefaultAsync(post => post.Id == postId);
 
-                if (post.Owner.Id == userId)
+                if (post.OwnerId == userId)
                 {
                     _context.PostList.Remove(post);
                     await _context.SaveChangesAsync();
