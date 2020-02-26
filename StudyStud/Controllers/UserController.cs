@@ -69,17 +69,17 @@ namespace StudyStud.Controllers
         public async Task<IActionResult> DeleteProfile(string userId)
         {
             User user = await _context.UserList.SingleOrDefaultAsync(user => user.Id == userId);
-            List<Topic> topicsOfUser = await _context.TopicList.Where(user => user.Owner.Id == userId).ToListAsync();
-            List<Post> postsOfUser = await _context.PostList.Where(user => user.Owner.Id == userId).ToListAsync();
+            List<Topic> topicsOfUser = await _context.TopicList.Where(user => user.OwnerId == userId).ToListAsync();
+            List<Post> postsOfUser = await _context.PostList.Where(user => user.OwnerId == userId).ToListAsync();
             
             foreach (Topic topic in topicsOfUser)
             {
-                topic.Owner = null;
+                topic.OwnerId = null;
             }
 
             foreach (Post post in postsOfUser)
             {
-                post.Owner = null;
+                post.OwnerId = null;
             }
 
             _context.UserList.Remove(user);
@@ -99,7 +99,7 @@ namespace StudyStud.Controllers
         [HttpGet("{userId}/topics")]
         public async Task<IActionResult> ListUsersTopics(string userId)
         {
-            List<Topic> topicsOfUser = await _context.TopicList.Where(user => user.Owner.Id == userId).ToListAsync();
+            List<Topic> topicsOfUser = await _context.TopicList.Where(user => user.OwnerId == userId).ToListAsync();
 
             return Ok(topicsOfUser);
         }
@@ -107,7 +107,7 @@ namespace StudyStud.Controllers
         [HttpGet("{userId}/posts")]
         public async Task<IActionResult> ListUsersPosts(string userId)
         {
-            List<Post> postsOfUser = await _context.PostList.Where(user => user.Owner.Id == userId).ToListAsync();
+            List<Post> postsOfUser = await _context.PostList.Where(user => user.OwnerId == userId).ToListAsync();
             
             return Ok(postsOfUser);
         }
@@ -115,7 +115,7 @@ namespace StudyStud.Controllers
         [HttpGet("{userId}/{topicId}/posts")]
         public async Task<IActionResult> ListUsersPostsInTopic(string userId,int topicId)
         {
-            List<Post> postsOfTopic = await _context.PostList.Where(post => post.Topic.Id == topicId && post.Owner.Id == userId).ToListAsync();
+            List<Post> postsOfTopic = await _context.PostList.Where(post => post.TopicID == topicId && post.OwnerId == userId).ToListAsync();
 
             return Ok(postsOfTopic);
         }
