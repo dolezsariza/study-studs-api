@@ -14,5 +14,6 @@ namespace StudyStud.Models
         public string Interests { get; set; }
         public string School { get; set; }
         public string City { get; set; }
+        public string ProfilePicture { get; set; }
     }
 }

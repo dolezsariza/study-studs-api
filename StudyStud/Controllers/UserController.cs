@@ -32,7 +32,8 @@ namespace StudyStud.Controllers
                 Introduction = user.Introduction,
                 Interests = user.Interests,
                 School = user.School,
-                City = user.City
+                City = user.City,
+                ProfilePicture = user.ProfilePicture
             };
 
             return Ok(profile);
@@ -51,6 +52,7 @@ namespace StudyStud.Controllers
             nuser.Interests = user.Interests;
             nuser.School = user.School;
             nuser.City = user.City;
+            nuser.ProfilePicture = user.ProfilePicture;
 
             try
             {
