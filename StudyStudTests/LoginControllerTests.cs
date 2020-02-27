@@ -6,6 +6,7 @@ using StudyStud.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
+using System.Threading.Tasks;
 
 namespace StudyStudTests
 {   
@@ -32,7 +33,14 @@ namespace StudyStudTests
         [Test]
         public void TestLoginIsSuccessful()
         {
-            //todo
+            User user = new User();
+            user.UserName = "TestUser";
+            user.Id = "TestId";
+            user.Email = "TestEmail";
+            Task<bool> result = Task.FromResult(true);
+            _userManager.FindByNameAsync(user.UserName).Returns(user);
+            _userManager.CheckPasswordAsync(user, "password").Returns(result);
+
             var expected = new OkResult();
             var actual = _loginController.Login(_login).Result;
 
@@ -40,12 +48,13 @@ namespace StudyStudTests
         }
 
         [Test]
-        public void TestLoginIsFailed()
+        public void TestLoginIsFailed() 
         {
-            signInResult = SignInResult.Failed;
-           // _signInManager.PasswordSignInAsync("Username", "Password69!", false, false).Returns(signInResult);
+            User user = new User();
+            Task<bool> result = Task.FromResult(false);
+            _userManager.CheckPasswordAsync(user, "password").Returns(result);
 
-            var expected = new UnauthorizedObjectResult(new UnauthorizedResult());
+            var expected = new BadRequestObjectResult(new BadRequestResult());
             var actual = _loginController.Login(_login).Result;
 
             Assert.AreEqual(expected.GetType(), actual.GetType());

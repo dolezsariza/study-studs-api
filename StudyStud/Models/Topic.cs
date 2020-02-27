@@ -14,6 +14,7 @@ namespace StudyStud.Models
         public List<Post> Posts { get; set; }
         [ForeignKey(nameof(User))]
         public string OwnerId { get; set; }
+        public string OwnerName { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }

@@ -10,6 +10,7 @@ namespace StudyStud.Models
         public int Id { get; set; }
         [ForeignKey(nameof(User))]
         public string OwnerId { get; set; }
+        public string OwnerName { get; set; }
         [ForeignKey(nameof(Topic))]
         public int TopicID { get; set; }
         public string Title { get; set; }
