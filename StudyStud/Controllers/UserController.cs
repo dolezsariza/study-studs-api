@@ -23,6 +23,7 @@ namespace StudyStud.Controllers
         [HttpGet("{userName}")]
         public async Task<IActionResult> GetProfile(string userName)
         {
+            try
             {
                 var user = await _context.UserList.SingleOrDefaultAsync(user => user.UserName == userName);
                 Profile profile = new Profile()
