@@ -43,7 +43,7 @@ namespace StudyStud.Controllers
                     new Claim("username", user.UserName),
                     new Claim("email", user.Email)
                 });
-                return Ok(claims.Claims.Where(c => c.Type == "id").Select(c => c.Value));
+                return Ok(claims.Claims.Select(c=>c.Value));
             }
             return BadRequest("Wrong username or password");
         }
