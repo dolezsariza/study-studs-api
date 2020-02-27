@@ -95,7 +95,7 @@ namespace StudyStud.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
-                return BadRequest();
+                return BadRequest("User not found");
             }
         }
 
