@@ -26,8 +26,8 @@ namespace StudyStudTests
             _studyDbContext = Substitute.For<StudyDbContext>(new DbContextOptions<StudyDbContext>());
             _loginController = new LoginController(_studyDbContext, _userManager);
             _login = new Login();
-            _login.Username = "Username";
-            _login.Password = "Password69!";
+            _login.Username = "TestUser";
+            _login.Password = "password";
         }
 
         [Test]
@@ -41,7 +41,7 @@ namespace StudyStudTests
             _userManager.FindByNameAsync(user.UserName).Returns(user);
             _userManager.CheckPasswordAsync(user, "password").Returns(result);
 
-            var expected = new OkResult();
+            var expected = new OkObjectResult(null);
             var actual = _loginController.Login(_login).Result;
 
             Assert.AreEqual(expected.GetType(), actual.GetType());
