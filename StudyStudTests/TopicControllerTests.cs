@@ -168,5 +168,56 @@ namespace StudyStudTests
             var actual = (StatusCodeResult)_topicController.DeleteTopic(topicId, user).Result;
             Assert.AreEqual(expected.StatusCode, actual.StatusCode);
         }
+
+        [Test]
+        public void DeleteTopic_GivenWrongUser_ReturnUnauthorized()
+        {
+            var topicId = 3;
+            var user = "{ \"UserId\" : \"sat\"}";
+            var expected = new UnauthorizedResult();
+            var actual = (StatusCodeResult)_topicController.DeleteTopic(topicId, user).Result;
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
+
+        [Test]
+        public void DeletePost_GivenValidInputs_ReturnOk()
+        {
+            var postId = 5;
+            var user = "{ \"UserId\" : \"si\"}";
+            var expected = new OkResult();
+            var actual = (StatusCodeResult)_topicController.DeletePost(postId, user).Result;
+            _posts.RemoveAll(p => p.Id == postId);
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
+
+        [Test]
+        public void DeletePost_GivenInValidTopicId_ReturnStatusCode406()
+        {
+            var postId = -1;
+            var user = "{ \"UserId\" : \"si\"}";
+            var expected = new StatusCodeResult(406);
+            var actual = (StatusCodeResult)_topicController.DeletePost(postId, user).Result;
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
+
+        [Test]
+        public void DeletePost_GivenInValidUser_ReturnStatusCode406()
+        {
+            var postId = 5;
+            var user = "";
+            var expected = new StatusCodeResult(406);
+            var actual = (StatusCodeResult)_topicController.DeletePost(postId, user).Result;
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
+
+        [Test]
+        public void DeletePost_GivenWrongUser_ReturnUnauthorized()
+        {
+            var postId = 5;
+            var user = "{ \"UserId\" : \"sat\"}";
+            var expected = new UnauthorizedResult();
+            var actual = (StatusCodeResult)_topicController.DeletePost(postId, user).Result;
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
     }
 }
