@@ -123,10 +123,9 @@ namespace StudyStud.Controllers
         [HttpDelete("{topicId}/{postId}")]
         public async Task<IActionResult> DeletePost(int postId, [FromBody]Object user)
         {
-            string userId = JObject.Parse(user.ToString()).GetValue("UserId").ToString();
-
             try
             {
+                string userId = JObject.Parse(user.ToString()).GetValue("UserId").ToString();
                 Post post = await _context.PostList.SingleOrDefaultAsync(post => post.Id == postId);
 
                 if (post.OwnerId == userId)
