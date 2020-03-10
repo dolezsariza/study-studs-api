@@ -18,16 +18,15 @@ namespace StudyStudTests
             .UseInMemoryDatabase(databaseName: "users")
             .Options);
         TopicController _topicController;
-        User _user;
-        
+        User _user = new User { Id = "ad", NickName = "Sanya", UserName = "Sanyi" };
 
-        [SetUp]
+
+    [SetUp]
         public void SetUp()
         {
             var topic1 = new Topic();
             var topic2 = new Topic { Description = "asdasd", Id = 4, OwnerId = "ad", OwnerName = "Sanyi", Title = "Sanyitopic" };
             var topic3 = new Topic { Description = "aaaaaaa", Id = 3, OwnerId = "ad", OwnerName = "Sanyi", Posts = new List<Post> { new Post(), new Post { Id = 5, OwnerId = "si", OwnerName = "Kata", Message = "asda", TopicID = 3 } } };
-            _user = new User { Id = "ad", NickName = "Sanya", UserName = "Sanyi" };
             _context.UserList.Add(_user);
             _topics = new List<Topic> { topic1, topic2, topic3 };
             _topics.ForEach(t => _context.TopicList.Add(t));
@@ -79,8 +78,10 @@ namespace StudyStudTests
         public void GetTopic_GivenValidId_ReturnOkResult()
         {
             var topicId = 3;
+            
             var expected = new OkObjectResult(_topics.Find(t => t.Id == topicId)).Value;
             var actual = ((OkObjectResult)_topicController.GetTopic(topicId).Result).Value;
+            
             Assert.AreEqual(expected, actual);
         }
 
@@ -88,8 +89,46 @@ namespace StudyStudTests
         public void GetTopic_GivenWrongId_ReturnStatus204()
         {
             var topicId = -1;
+            
             var expected = new StatusCodeResult(204);
             var actual = (StatusCodeResult)_topicController.GetTopic(topicId).Result;
+            
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
+
+        [Test]
+        public void AddPostToTopic_GivenValidIdAndPost_ReturnOk()
+        {
+            var topicId = _topics[1].Id;
+            var post = new Post { OwnerId = _user.Id, Message = "Something" };
+            
+            var expected = new OkResult();
+            var actual = (StatusCodeResult)_topicController.AddPostToTopic(topicId, post).Result;
+            
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
+
+        [Test]
+        public void AddPostToTopic_GivenWrongId_ReturnStatusCode406()
+        {
+            var topicId = -1;
+            var post = new Post { OwnerId = _user.Id, Message = "Something" };
+            
+            var expected = new StatusCodeResult(406);
+            var actual = (StatusCodeResult)_topicController.AddPostToTopic(topicId, post).Result;
+            
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
+
+        [Test]
+        public void AddPostToTopic_GivenInvalidPost_ReturnStatusCode406()
+        {
+            var topicId = _topics[1].Id;
+            var post = new Post { OwnerId = null };
+            
+            var expected = new StatusCodeResult(406);
+            var actual = (StatusCodeResult)_topicController.AddPostToTopic(topicId, post).Result;
+            
             Assert.AreEqual(expected.StatusCode, actual.StatusCode);
         }
     }
