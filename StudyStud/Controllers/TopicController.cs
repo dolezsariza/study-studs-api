@@ -25,7 +25,7 @@ namespace StudyStud.Controllers
         {
             try
             {
-                List<Topic> topics = await _context.TopicList.ToListAsync();
+                List<Topic> topics = await _context.TopicList.OrderByDescending(t => t.Date).ToListAsync();
                 return Ok(topics);
             }
             catch (Exception e)
@@ -75,6 +75,10 @@ namespace StudyStud.Controllers
         {
             try
             {
+               HashSet<bool> contains = new HashSet<bool>(2);
+               _context.TopicList.ForEachAsync(t => contains.Add(t.Id == topicId));
+               if (!contains.Contains(true))
+                    throw new Exception("Wrong topic Id");
                 User owner = await _context.UserList.SingleOrDefaultAsync(user => user.Id == post.OwnerId);
                 post.OwnerName = owner.UserName;
                 post.TopicID = topicId;
@@ -92,9 +96,9 @@ namespace StudyStud.Controllers
         [HttpDelete("{topicId}")]
         public async Task<IActionResult> DeleteTopic(int topicId, [FromBody]Object user)
         {
-            string userId = JObject.Parse(user.ToString()).GetValue("UserId").ToString();
             try
             {
+                string userId = JObject.Parse(user.ToString()).GetValue("UserId").ToString();
                 Topic topic = await _context.TopicList.SingleOrDefaultAsync(topic => topic.Id == topicId);
 
                 if (topic.OwnerId == userId)
@@ -119,10 +123,9 @@ namespace StudyStud.Controllers
         [HttpDelete("{topicId}/{postId}")]
         public async Task<IActionResult> DeletePost(int postId, [FromBody]Object user)
         {
-            string userId = JObject.Parse(user.ToString()).GetValue("UserId").ToString();
-
             try
             {
+                string userId = JObject.Parse(user.ToString()).GetValue("UserId").ToString();
                 Post post = await _context.PostList.SingleOrDefaultAsync(post => post.Id == postId);
 
                 if (post.OwnerId == userId)
