@@ -74,5 +74,23 @@ namespace StudyStudTests
             
             Assert.AreEqual(expected, actual);
         }
+
+        [Test]
+        public void GetTopic_GivenValidId_ReturnOkResult()
+        {
+            var topicId = 3;
+            var expected = new OkObjectResult(_topics.Find(t => t.Id == topicId)).Value;
+            var actual = ((OkObjectResult)_topicController.GetTopic(topicId).Result).Value;
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void GetTopic_GivenWrongId_ReturnStatus204()
+        {
+            var topicId = -1;
+            var expected = new StatusCodeResult(204);
+            var actual = (StatusCodeResult)_topicController.GetTopic(topicId).Result;
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
     }
 }
