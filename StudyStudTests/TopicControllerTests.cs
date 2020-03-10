@@ -14,6 +14,7 @@ namespace StudyStudTests
     {
 
         List<Topic> _topics;
+        List<Post> _posts;
         StudyDbContext _context = new StudyDbContext(new DbContextOptionsBuilder<StudyDbContext>()
             .UseInMemoryDatabase(databaseName: "users")
             .Options);
@@ -21,15 +22,17 @@ namespace StudyStudTests
         User _user = new User { Id = "ad", NickName = "Sanya", UserName = "Sanyi" };
 
 
-    [SetUp]
+        [SetUp]
         public void SetUp()
         {
+            _posts = new List<Post> { new Post(), new Post { Id = 5, OwnerId = "si", OwnerName = "Kata", Message = "asda", TopicID = 3 } };
             var topic1 = new Topic();
             var topic2 = new Topic { Description = "asdasd", Id = 4, OwnerId = "ad", OwnerName = "Sanyi", Title = "Sanyitopic" };
-            var topic3 = new Topic { Description = "aaaaaaa", Id = 3, OwnerId = "ad", OwnerName = "Sanyi", Posts = new List<Post> { new Post(), new Post { Id = 5, OwnerId = "si", OwnerName = "Kata", Message = "asda", TopicID = 3 } } };
+            var topic3 = new Topic { Description = "aaaaaaa", Id = 3, OwnerId = "ad", OwnerName = "Sanyi", Posts = _posts };
             _context.UserList.Add(_user);
             _topics = new List<Topic> { topic1, topic2, topic3 };
             _topics.ForEach(t => _context.TopicList.Add(t));
+            _posts.ForEach(p => _context.PostList.Add(p));
             _context.SaveChanges();
             _topicController = new TopicController(_context);
         }
@@ -39,8 +42,10 @@ namespace StudyStudTests
         {
             _context.UserList.Remove(_user);
             _context.TopicList.RemoveRange(_topics);
+            _context.PostList.RemoveRange(_posts);
             _context.SaveChanges();
             _topics = null;
+            _posts = null;
         } 
 
         [Test]
@@ -129,6 +134,38 @@ namespace StudyStudTests
             var expected = new StatusCodeResult(406);
             var actual = (StatusCodeResult)_topicController.AddPostToTopic(topicId, post).Result;
             
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
+
+        [Test]
+        public void DeleteTopic_GivenValidTopicIdAndUser_ReturnOk()
+        {
+            var topicId = 3;
+            var user = "{ \"UserId\" : \"ad\"}";
+            var expected = new OkResult();
+            var actual = (StatusCodeResult)_topicController.DeleteTopic(topicId, user).Result;
+            _topics.RemoveAll(t => t.Id == topicId);
+            _posts.RemoveAll(p => p.TopicID == topicId);
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
+
+        [Test]
+        public void DeleteTopic_GivenInValidTopicId_ReturnStatusCode406()
+        {
+            var topicId = -1;
+            var user = "{ \"UserId\" : \"ad\"}";
+            var expected = new StatusCodeResult(406);
+            var actual = (StatusCodeResult)_topicController.DeleteTopic(topicId, user).Result;
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
+        }
+
+        [Test]
+        public void DeleteTopic_GivenInValidUser_ReturnStatusCode406()
+        {
+            var topicId = 3;
+            var user = "";
+            var expected = new StatusCodeResult(406);
+            var actual = (StatusCodeResult)_topicController.DeleteTopic(topicId, user).Result;
             Assert.AreEqual(expected.StatusCode, actual.StatusCode);
         }
     }
