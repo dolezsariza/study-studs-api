@@ -25,7 +25,7 @@ namespace StudyStud.Controllers
         {
             try
             {
-                List<Topic> topics = await _context.TopicList.ToListAsync();
+                List<Topic> topics = await _context.TopicList.OrderByDescending(t => t.Date).ToListAsync();
                 return Ok(topics);
             }
             catch (Exception e)
