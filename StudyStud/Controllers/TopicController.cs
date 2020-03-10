@@ -75,6 +75,10 @@ namespace StudyStud.Controllers
         {
             try
             {
+               HashSet<bool> contains = new HashSet<bool>(2);
+               _context.TopicList.ForEachAsync(t => contains.Add(t.Id == topicId));
+               if (!contains.Contains(true))
+                    throw new Exception("Wrong topic Id");
                 User owner = await _context.UserList.SingleOrDefaultAsync(user => user.Id == post.OwnerId);
                 post.OwnerName = owner.UserName;
                 post.TopicID = topicId;
