@@ -96,9 +96,9 @@ namespace StudyStud.Controllers
         [HttpDelete("{topicId}")]
         public async Task<IActionResult> DeleteTopic(int topicId, [FromBody]Object user)
         {
-            string userId = JObject.Parse(user.ToString()).GetValue("UserId").ToString();
             try
             {
+                string userId = JObject.Parse(user.ToString()).GetValue("UserId").ToString();
                 Topic topic = await _context.TopicList.SingleOrDefaultAsync(topic => topic.Id == topicId);
 
                 if (topic.OwnerId == userId)
