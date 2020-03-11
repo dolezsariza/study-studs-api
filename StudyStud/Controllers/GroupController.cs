@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using StudyStud.Models;
 
 namespace StudyStud.Controllers
@@ -24,6 +25,7 @@ namespace StudyStud.Controllers
         public async Task<ActionResult> GetAllGroups()
         {
             var groups = await _context.GroupList.ToListAsync();
+            groups.ForEach(g => g.Topics = _context.TopicList.Where(t => t.GroupId == g.Id).ToList());
             if(groups != null)
             {
                 return Ok(groups);
@@ -41,7 +43,7 @@ namespace StudyStud.Controllers
             {
                 return NotFound();
             }
-
+            group.Topics = _context.TopicList.Where(t => t.GroupId == id).ToList();
             return Ok(group);
         }
 
@@ -55,41 +57,36 @@ namespace StudyStud.Controllers
             }
 
             group.Title = modifiedGroup.Title;
-            group.Description = group.Description;
+            group.Description = modifiedGroup.Description;
 
             try
             {
                 await _context.SaveChangesAsync();
+                return Ok();
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GroupExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return StatusCode(505);
             }
-
-            return NoContent();
         }
 
         [HttpPost]
-        public async Task<ActionResult<Group>> AddGroup(string ownerName, [FromBody] Group group)
+        public async Task<ActionResult<Group>> AddGroup([FromBody] Object groupInfo)
         {
-            var user = await _context.UserList.SingleOrDefaultAsync(u => u.UserName == ownerName);
+            var group = new Group();
+            group.OwnerName = (string)JObject.Parse(groupInfo.ToString()).GetValue("OwnerName");
+            group.Title = (string)JObject.Parse(groupInfo.ToString()).GetValue("Title");
+            group.Description = (string)JObject.Parse(groupInfo.ToString()).GetValue("Description");
+            var user = await _context.UserList.SingleOrDefaultAsync(u => u.UserName == group.OwnerName);
             if(user == null)
             {
-                return NotFound("Wrong given ownername");
+                return NotFound("Wrong request body");
             }
             GroupUser groupUser = new GroupUser { Group = group, GroupId = group.Id, User = user, UserId = user.Id };
-            user.GroupUsers.Add(groupUser);
-            group.GroupUsers.Add(groupUser);
             _context.GroupList.Add(group);
+            _context.GroupUsers.Add(groupUser);
             await _context.SaveChangesAsync();
-            return CreatedAtAction("GetGroup", new { id = group.Id }, group);
+            return Created("New group created", "");
         }
 
         [HttpDelete("{id}")]
@@ -100,27 +97,26 @@ namespace StudyStud.Controllers
             {
                 return NotFound();
             }
-
             _context.GroupList.Remove(group);
+            _context.GroupUsers.RemoveRange(_context.GroupUsers.Where(g => g.GroupId == id));
             await _context.SaveChangesAsync();
 
             return Ok();
         }
 
-        [HttpPost("{id}/join")]
-        public async Task<ActionResult> JoinToGroup(string userName, int GroupId)
+        [HttpPost("{groupId}/join")]
+        public async Task<ActionResult> JoinToGroup([FromBody]string userName, int groupId)
         {
             try
             {
                 var user = await _context.UserList.SingleOrDefaultAsync(u => u.UserName == userName);
-                var group = await _context.GroupList.SingleOrDefaultAsync(g => g.Id == GroupId);
+                var group = await _context.GroupList.SingleOrDefaultAsync(g => g.Id == groupId);
                 if (user == null || group == null)
                 {
                     return NotFound();
                 }
                 GroupUser groupUser = new GroupUser { GroupId = group.Id, Group = group, User = user, UserId = user.Id };
-                user.GroupUsers.Add(groupUser);
-                group.GroupUsers.Add(groupUser);
+                _context.GroupUsers.Add(groupUser);
                 await _context.SaveChangesAsync();
                 return Ok();
             }
@@ -131,7 +127,7 @@ namespace StudyStud.Controllers
             }
         }
 
-        [HttpPost("{id}/addtopic")]
+        [HttpPost("{groupId}/addtopic")]
         public async Task<ActionResult> AddTopicToGroup(int groupId, [FromBody]Topic ntopic)
         {
             var topic = await _context.TopicList.SingleOrDefaultAsync(t => t.Id == ntopic.Id);
@@ -139,8 +135,13 @@ namespace StudyStud.Controllers
             if (group == null)
                 return NotFound();
             if (topic == null)
+            {
+                ntopic.GroupId = groupId;
                 _context.TopicList.Add(ntopic);
-            group.Topics.Add(ntopic);
+            }
+            else
+                topic.GroupId = groupId;
+
             try
             {
                 await _context.SaveChangesAsync();
@@ -151,11 +152,6 @@ namespace StudyStud.Controllers
 
                 return StatusCode(505);
             }
-        }
-
-        private bool GroupExists(int id)
-        {
-            return _context.GroupList.Any(e => e.Id == id);
         }
     }
 }

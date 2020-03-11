@@ -11,6 +11,9 @@ namespace StudyStud.Models
     {
         [Key]
         public int Id { get; set; }
+
+        [ForeignKey(nameof(Group))]
+        public int GroupId { get; set; }
         public List<Post> Posts { get; set; }
         [ForeignKey(nameof(User))]
         public string OwnerId { get; set; }
