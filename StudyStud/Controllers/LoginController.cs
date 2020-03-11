@@ -30,7 +30,7 @@ namespace StudyStud.Controllers
         public async Task<IActionResult> Login(Login login)
         {
             var user = await _userManager.FindByNameAsync(login.Username);
-            if(user == null)
+            if (user == null)
             {
                 return BadRequest("Wrong username or password");
             }
@@ -40,14 +40,7 @@ namespace StudyStud.Controllers
             if (result)
             {
                 await _signInManager.SignInAsync(user, isPersistent: true);
-                var claims = new ClaimsIdentity(new[]
-                {
-                    new Claim("id", user.Id),
-                    new Claim("username", user.UserName),
-                    new Claim("email", user.Email)
-                });
-
-                return Ok(claims.Claims.Select(c=>c.Value));
+                return Ok(User.Claims.Select(c => c.Value));
             }
             return BadRequest("Wrong username or password");
         }
