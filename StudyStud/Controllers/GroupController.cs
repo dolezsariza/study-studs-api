@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using StudyStud.Models;
+using StudyStud.RequestModels;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using StudyStud.Models;
 
 namespace StudyStud.Controllers
 {
@@ -71,12 +68,12 @@ namespace StudyStud.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Group>> AddGroup([FromBody] Object groupInfo)
+        public async Task<ActionResult<Group>> AddGroup([FromBody] GroupPostRequest groupInfo)
         {
             var group = new Group();
-            group.OwnerName = (string)JObject.Parse(groupInfo.ToString()).GetValue("OwnerName");
-            group.Title = (string)JObject.Parse(groupInfo.ToString()).GetValue("Title");
-            group.Description = (string)JObject.Parse(groupInfo.ToString()).GetValue("Description");
+            group.OwnerName = groupInfo.OwnerName;
+            group.Title = groupInfo.Title;
+            group.Description = groupInfo.Description;
             var user = await _context.UserList.SingleOrDefaultAsync(u => u.UserName == group.OwnerName);
             if(user == null)
             {
