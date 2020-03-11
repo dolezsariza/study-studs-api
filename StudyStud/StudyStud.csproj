@@ -17,6 +17,8 @@
     <Compile Remove="Migrations\20200225095618_FixedDB.Designer.cs" />
     <Compile Remove="Migrations\20200226134958_revert.cs" />
     <Compile Remove="Migrations\20200226134958_revert.Designer.cs" />
+    <Compile Remove="Migrations\20200311102233_Add Group to database.cs" />
+    <Compile Remove="Migrations\20200311102233_Add Group to database.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
