@@ -14,5 +14,6 @@ namespace StudyStud.Models
         public string City { get; set; }
         public string ProfilePicture { get; set; }
         public List<Group> Groups { get; set; }
+        public List<GroupUser> GroupUsers { get; set; }
     }
 }

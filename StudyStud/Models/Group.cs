@@ -19,6 +19,7 @@ namespace StudyStud.Models
         public string Description { get; set; }
         public DateTime Date { get; set; }
         public List<User> Users { get; set; }
+        public List<GroupUser> GroupUsers { get; set; }
 
         public Group()
         {
