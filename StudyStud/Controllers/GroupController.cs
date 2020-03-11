@@ -77,8 +77,16 @@ namespace StudyStud.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Group>> AddGroup(Group group)
+        public async Task<ActionResult<Group>> AddGroup(string ownerName, [FromBody] Group group)
         {
+            var user = await _context.UserList.SingleOrDefaultAsync(u => u.UserName == ownerName);
+            if(user == null)
+            {
+                return NotFound("Wrong given ownername");
+            }
+            GroupUser groupUser = new GroupUser { Group = group, GroupId = group.Id, User = user, UserId = user.Id };
+            user.GroupUsers.Add(groupUser);
+            group.GroupUsers.Add(groupUser);
             _context.GroupList.Add(group);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetGroup", new { id = group.Id }, group);
