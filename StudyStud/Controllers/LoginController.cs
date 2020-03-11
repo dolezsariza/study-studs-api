@@ -17,11 +17,13 @@ namespace StudyStud.Controllers
     {
         private readonly StudyDbContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
-        public LoginController(StudyDbContext context, UserManager<User> userManager)
+        public LoginController(StudyDbContext context, UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _context = context;
+            _signInManager = signInManager;
         }
 
         [HttpPost]
@@ -37,12 +39,14 @@ namespace StudyStud.Controllers
 
             if (result)
             {
+                await _signInManager.SignInAsync(user, isPersistent: true);
                 var claims = new ClaimsIdentity(new[]
                 {
                     new Claim("id", user.Id),
                     new Claim("username", user.UserName),
                     new Claim("email", user.Email)
                 });
+
                 return Ok(claims.Claims.Select(c=>c.Value));
             }
             return BadRequest("Wrong username or password");

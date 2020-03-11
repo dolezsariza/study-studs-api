@@ -18,6 +18,7 @@ using StudyStud.Models;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace StudyStud
 {
@@ -52,14 +53,18 @@ namespace StudyStud
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.Password.RequireUppercase = true;
             })
-                .AddEntityFrameworkStores<StudyDbContext>();
+                .AddEntityFrameworkStores<StudyDbContext>().AddDefaultTokenProviders();
 
             services.ConfigureApplicationCookie(options=>
             {
+                options.Cookie.HttpOnly = true;
                 options.Cookie.Name = "credentials";
                 options.ExpireTimeSpan = TimeSpan.FromHours(24);
                 options.Cookie.Domain = "localhost";
                 options.LoginPath = "/login";
+                options.LogoutPath = "/logout";
+                options.ReturnUrlParameter = CookieAuthenticationDefaults.ReturnUrlParameter;
+                options.SlidingExpiration = true;
             });
 services.AddSwaggerGen(c =>
             {
@@ -89,7 +94,6 @@ services.AddSwaggerGen(c =>
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
