@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic;
 
 namespace StudyStud.Models
 {
@@ -12,5 +13,6 @@ namespace StudyStud.Models
         public string School { get; set; }
         public string City { get; set; }
         public string ProfilePicture { get; set; }
+        public List<Group> Groups { get; set; }
     }
 }
