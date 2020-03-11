@@ -15,6 +15,16 @@ namespace StudyStud.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<GroupUser>()
+                .HasKey(bc => new { bc.GroupId, bc.UserId });
+            modelBuilder.Entity<GroupUser>()
+                .HasOne(bc => bc.Group)
+                .WithMany(b => b.GroupUsers)
+                .HasForeignKey(bc => bc.GroupId);
+            modelBuilder.Entity<GroupUser>()
+                .HasOne(bc => bc.User)
+                .WithMany(c => c.GroupUsers)
+                .HasForeignKey(bc => bc.UserId);
 
             //modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
         }
