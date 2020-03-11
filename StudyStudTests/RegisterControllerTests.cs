@@ -6,6 +6,7 @@ using NSubstitute;
 using NUnit.Framework;
 using StudyStud.Controllers;
 using StudyStud.Models;
+using StudyStud.RequestModels;
 
 namespace StudyStudTests
 {
@@ -16,8 +17,8 @@ namespace StudyStudTests
         private StudyDbContext _studyDbContext;
         private RegisterController _registerController;
         private User _user;
-        private const string GOOD_JSON = "{\"email\" : \"username@username.com\", \"userName\" : \"Username\", \"password\" : \"Password69!\"}";
-        private const string BAD_JSON = "{\"email\" : \"username@username.com\", \"userName\" : \"Username\", \"password\" : \"password\"}";
+        private readonly RegisterPostRequest _good = new RegisterPostRequest { Email = "username@username.com", Username = "Username", Password = "Password69!"};
+        private readonly RegisterPostRequest _bad = new RegisterPostRequest { Email = "username@username.com", Username = "Username", Password = "p" };
 
         [SetUp]
         public void Setup()
@@ -30,27 +31,26 @@ namespace StudyStudTests
             _user.Email = "username@username.com";
         }
 
-        /*[Test]
+        [Test]
         public void TestRegisterGivenValidCredentialsReturnCreated()
         {
             var registerResult = IdentityResult.Success;
-            _user.Password = "Password69!";
             _userManager.CreateAsync(Arg.Any<User>(),"Password69!").Returns(registerResult);
 
             var expected = new CreatedResult("", null);
-            var actual = _registerController.Register(JObject.Parse(GOOD_JSON)).Result;
+            var actual = _registerController.Register(_good).Result;
 
             Assert.AreEqual(expected.GetType(), actual.GetType());
-        }*/
+        }
 
         [Test]
         public void TestRegisterGivenWrongCredentialsReturnFailed()
         {
             var registerResult = IdentityResult.Failed();
-            _userManager.CreateAsync(Arg.Any<User>(), "password").Returns(registerResult);
+            _userManager.CreateAsync(Arg.Any<User>(), "p").Returns(registerResult);
 
             var expected = new ObjectResult(new StatusCodeResult(406));
-            var actual = _registerController.Register(JObject.Parse(BAD_JSON)).Result;
+            var actual = _registerController.Register(_bad).Result;
 
             Assert.AreEqual(expected.GetType(), actual.GetType());
         }
