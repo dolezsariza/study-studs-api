@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using StudyStud.Models;
+using StudyStud.RequestModels;
 
 namespace StudyStud.Controllers
 {
@@ -24,13 +26,17 @@ namespace StudyStud.Controllers
             _userManager = userManager;
         }
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody]Object json)
+        public async Task<IActionResult> Register(RegisterPostRequest registerRequest)
         {
-            JObject jObject = JObject.Parse(json.ToString());
-            var user = new User { UserName = jObject.GetValue("userName").ToString(), Email = jObject.GetValue("email").ToString() };
-            var result = await _userManager.CreateAsync(user, jObject.GetValue("password").ToString());
+            var user = new User { UserName = registerRequest.Username, Email = registerRequest.Email };
+
+            var result = await _userManager.CreateAsync(user, registerRequest.Password);
+
+
+
             if (result.Succeeded)
             {
+                await _userManager.AddClaimAsync(user, new Claim(ClaimTypes.Email, user.Email));
                 return Created("", user);
             }
 
