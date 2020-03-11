@@ -15,6 +15,8 @@ namespace StudyStud.Models
         [ForeignKey(nameof(User))]
         public string OwnerId { get; set; }
         public string OwnerName { get; set; }
+        [ForeignKey(nameof(Group))]
+        public int GroupId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime Date { get; set; }
