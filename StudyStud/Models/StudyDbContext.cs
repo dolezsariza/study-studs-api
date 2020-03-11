@@ -15,6 +15,7 @@ namespace StudyStud.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<GroupUser>().HasKey(gu => new {gu.UserId , gu.GroupId });
 
             //modelBuilder.ApplyConfiguration(new EmployeeConfiguration());
         }
@@ -23,5 +24,7 @@ namespace StudyStud.Models
         public DbSet<Topic> TopicList { get; set; }
         public DbSet<Post> PostList { get; set; }
         public DbSet<Group> GroupList { get; set; }
+
+        public DbSet<GroupUser> GroupUsers { get; set; }
     }
 }
