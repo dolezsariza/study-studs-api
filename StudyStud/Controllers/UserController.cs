@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using StudyStud.Models;
@@ -20,9 +21,11 @@ namespace StudyStud.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpGet("{userName}")]
         public async Task<IActionResult> GetProfile(string userName)
         {
+           
             try
             {
                 var user = await _context.UserList.SingleOrDefaultAsync(user => user.UserName == userName);
@@ -44,9 +47,14 @@ namespace StudyStud.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut("{userName}")]
         public async Task<IActionResult> UpdateProfile(string userName, [FromBody]User user)
         {
+            if (!UserAthentic(userName))
+            {
+                return BadRequest("You don't have permissions for this action!");
+            }
             try
             {
                 var nuser = await _context.UserList.SingleOrDefaultAsync(user => user.UserName == userName);
@@ -69,9 +77,14 @@ namespace StudyStud.Controllers
            
         }
 
+        [Authorize]
         [HttpDelete("{userName}")]
         public async Task<IActionResult> DeleteProfile(string userName)
         {
+            if (!UserAthentic(userName))
+            {
+                return BadRequest("You don't have permissions for this action!");
+            }
             try
             {
                 User user = await _context.UserList.SingleOrDefaultAsync(user => user.UserName == userName);
@@ -99,6 +112,7 @@ namespace StudyStud.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{userName}/topics")]
         public async Task<IActionResult> ListUsersTopics(string userName)
         {
@@ -115,6 +129,7 @@ namespace StudyStud.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{userName}/posts")]
         public async Task<IActionResult> ListUsersPosts(string userName)
         {
@@ -131,6 +146,7 @@ namespace StudyStud.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("{userName}/{topicId}/posts")]
         public async Task<IActionResult> ListUsersPostsInTopic(string userName,int topicId)
         {
@@ -145,6 +161,23 @@ namespace StudyStud.Controllers
             {
                 return NotFound();
             }
+        }
+
+        private bool UserAthentic(string username)
+        {
+            var currentUserName = User.Identity.Name;
+            if (currentUserName == username) return true;
+            return false;
+            /*
+            Console.WriteLine($"Current User: {currentUserName}\nClaims:");
+            var claims = User.Claims.ToList();
+            foreach (var claim in claims)
+            {
+                Console.WriteLine($"Type : {claim.Type}");
+                Console.WriteLine($"Value : {claim.Value}");
+            }
+
+             */
         }
     }
 }
