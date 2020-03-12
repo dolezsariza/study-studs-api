@@ -23,7 +23,8 @@ namespace StudyStudTests
         {
             _userManager = Substitute.For<FakeUserManager>();
             _studyDbContext = Substitute.For<StudyDbContext>(new DbContextOptions<StudyDbContext>());
-            //_loginController = new LoginController(_studyDbContext, _userManager);
+            _signInManager = Substitute.For<FakeSignInManager>();
+            _loginController = new LoginController(_studyDbContext, _userManager, _signInManager);
             _login = new Login();
             _login.Username = "TestUser";
             _login.Password = "password";
