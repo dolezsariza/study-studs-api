@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using StudyStud.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 using System.Threading.Tasks;
 
 namespace StudyStudTests
@@ -15,7 +14,7 @@ namespace StudyStudTests
     {
         UserManager<User> _userManager;
         StudyDbContext _studyDbContext;
-        SignInResult signInResult;
+        SignInManager<User> _signInManager;
         LoginController _loginController;
         Login _login;
         
@@ -31,7 +30,7 @@ namespace StudyStudTests
         }
 
         [Test]
-        public void TestLoginIsSuccessful()
+        public void TestLoginIsSuccessfull()
         {
             User user = new User();
             user.UserName = "TestUser";
@@ -40,11 +39,12 @@ namespace StudyStudTests
             Task<bool> result = Task.FromResult(true);
             _userManager.FindByNameAsync(user.UserName).Returns(user);
             _userManager.CheckPasswordAsync(user, "password").Returns(result);
+            _signInManager.SignInAsync(user, true).Returns(result);
 
             var expected = new OkObjectResult(null);
-            var actual = _loginController.Login(_login).Result;
+            var actual = (ObjectResult) _loginController.Login(_login).Result;
 
-            Assert.AreEqual(expected.GetType(), actual.GetType());
+            Assert.AreEqual(expected.StatusCode, actual.StatusCode);
         }
 
         [Test]
