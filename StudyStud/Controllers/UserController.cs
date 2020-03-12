@@ -83,7 +83,7 @@ namespace StudyStud.Controllers
         {
             if (!UserAthentic(userName))
             {
-                return BadRequest("You don't have permissions for this action!");
+                return Unauthorized("You don't have permissions for this action!");
             }
             try
             {
@@ -168,16 +168,6 @@ namespace StudyStud.Controllers
             var currentUserName = User.Identity.Name;
             if (currentUserName == username) return true;
             return false;
-            /*
-            Console.WriteLine($"Current User: {currentUserName}\nClaims:");
-            var claims = User.Claims.ToList();
-            foreach (var claim in claims)
-            {
-                Console.WriteLine($"Type : {claim.Type}");
-                Console.WriteLine($"Value : {claim.Value}");
-            }
-
-             */
         }
     }
 }
