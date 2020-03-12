@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using StudyStud.Models;
+using StudyStud.RequestModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace StudyStud.Controllers
@@ -37,12 +39,15 @@ namespace StudyStud.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddTopic(Topic topic)
+        public async Task<IActionResult> AddTopic(TopicPostRequest topicRequest)
         {
             try
             {
-                User owner = await _context.UserList.SingleOrDefaultAsync(user => user.Id == topic.OwnerId);
-                topic.OwnerName = owner.UserName;
+                Topic topic = new Topic() { Description=topicRequest.Description, Title= topicRequest.Title };
+                var userName = User.Identity.Name;
+                var ownerId = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier);
+                topic.OwnerId = ownerId.Value;
+                topic.OwnerName = userName;
                 _context.TopicList.Add(topic);
                 await _context.SaveChangesAsync();
                 return Ok();
@@ -76,11 +81,11 @@ namespace StudyStud.Controllers
             try
             {
                HashSet<bool> contains = new HashSet<bool>(2);
-               _context.TopicList.ForEachAsync(t => contains.Add(t.Id == topicId));
+               await _context.TopicList.ForEachAsync(t => contains.Add(t.Id == topicId));
                if (!contains.Contains(true))
                     throw new Exception("Wrong topic Id");
-                User owner = await _context.UserList.SingleOrDefaultAsync(user => user.Id == post.OwnerId);
-                post.OwnerName = owner.UserName;
+                post.OwnerName = User.Identity.Name;
+                post.OwnerId = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
                 post.TopicID = topicId;
                 _context.PostList.Add(post);
                 await _context.SaveChangesAsync();

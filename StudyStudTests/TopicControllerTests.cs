@@ -57,7 +57,7 @@ namespace StudyStudTests
             var actual = ((OkObjectResult)_topicController.GetTopics().Result).Value;
             Assert.AreEqual(expected, actual);
         }
-
+        /*
         [Test]
         public void AddTopic_GivenValidTopic_ReturnSuccess()
         {
@@ -78,7 +78,7 @@ namespace StudyStudTests
             
             Assert.AreEqual(expected, actual);
         }
-
+        */
         [Test]
         public void GetTopic_GivenValidId_ReturnOkResult()
         {

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using StudyStud.Models;
 using StudyStud.RequestModels;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace StudyStud.Controllers
@@ -53,6 +54,12 @@ namespace StudyStud.Controllers
                 return BadRequest();
             }
 
+            var identified = await UserOwnsGroup(id);
+            if (!identified)
+            {
+                return Unauthorized("You do not have rights to do this");
+            }
+
             group.Title = modifiedGroup.Title;
             group.Description = modifiedGroup.Description;
 
@@ -71,7 +78,8 @@ namespace StudyStud.Controllers
         public async Task<ActionResult<Group>> AddGroup([FromBody] GroupPostRequest groupInfo)
         {
             var group = new Group();
-            group.OwnerName = groupInfo.OwnerName;
+            group.OwnerName = GetUserName();
+            group.OwnerId = GetUserId();
             group.Title = groupInfo.Title;
             group.Description = groupInfo.Description;
             var user = await _context.UserList.SingleOrDefaultAsync(u => u.UserName == group.OwnerName);
@@ -94,6 +102,11 @@ namespace StudyStud.Controllers
             {
                 return NotFound();
             }
+            var identified = await UserOwnsGroup(id);
+            if (!identified) 
+            {
+                return Unauthorized("You do not have rights to do this");
+            }
             _context.GroupList.Remove(group);
             _context.GroupUsers.RemoveRange(_context.GroupUsers.Where(g => g.GroupId == id));
             await _context.SaveChangesAsync();
@@ -102,11 +115,11 @@ namespace StudyStud.Controllers
         }
 
         [HttpPost("{groupId}/join")]
-        public async Task<ActionResult> JoinToGroup([FromBody]string userName, int groupId)
+        public async Task<ActionResult> JoinToGroup(int groupId)
         {
             try
             {
-                var user = await _context.UserList.SingleOrDefaultAsync(u => u.UserName == userName);
+                var user = await _context.UserList.SingleOrDefaultAsync(u => u.UserName == GetUserName());
                 var group = await _context.GroupList.SingleOrDefaultAsync(g => g.Id == groupId);
                 if (user == null || group == null)
                 {
@@ -138,7 +151,6 @@ namespace StudyStud.Controllers
             }
             else
                 topic.GroupId = groupId;
-
             try
             {
                 await _context.SaveChangesAsync();
@@ -150,5 +162,25 @@ namespace StudyStud.Controllers
                 return StatusCode(505);
             }
         }
+
+        async private Task<bool> UserOwnsGroup(int groupId)
+        {
+            var group = await _context.GroupList.SingleOrDefaultAsync(g => g.Id == groupId);
+            var userId = group.OwnerId;
+            var currentUserId = GetUserId();
+            return (currentUserId == userId);
+        }
+
+
+        private string GetUserId()
+        {
+            return User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+        }
+        private string GetUserName()
+        {
+            return User.Identity.Name;
+        }
+
+
     }
 }
