@@ -40,7 +40,7 @@ namespace StudyStud.Controllers
             if (result)
             {
                 await _signInManager.SignInAsync(user, isPersistent: true);
-                return Ok(User.Claims.Select(c => c.Value));
+                return Ok(new[] { user.Id, user.UserName, user.Email });
             }
             return BadRequest("Wrong username or password");
         }
