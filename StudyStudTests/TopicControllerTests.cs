@@ -101,7 +101,7 @@ namespace StudyStudTests
             Assert.AreEqual(expected.StatusCode, actual.StatusCode);
         }
 
-        [Test]
+        /*[Test]
         public void AddPostToTopic_GivenValidIdAndPost_ReturnOk()
         {
             var topicId = _topics[1].Id;
@@ -112,6 +112,7 @@ namespace StudyStudTests
             
             Assert.AreEqual(expected.StatusCode, actual.StatusCode);
         }
+        */
 
         [Test]
         public void AddPostToTopic_GivenWrongId_ReturnStatusCode406()
