@@ -24,7 +24,8 @@ namespace StudyStud.Models
         public DbSet<Topic> TopicList { get; set; }
         public DbSet<Post> PostList { get; set; }
         public DbSet<Group> GroupList { get; set; }
-
         public DbSet<GroupUser> GroupUsers { get; set; }
+
+        public DbSet<AppFile> FileList { get; set; }
     }
 }
