@@ -24,17 +24,18 @@ namespace StudyStud.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadFile(FilePostRequest request)
+        public async Task<IActionResult> UploadFile()
         {
             try
             {
+                
                 using (var memoryStream = new MemoryStream())
                 {
-                    await request.FormFile.CopyToAsync(memoryStream);
+                    await Request.Form.Files[0].CopyToAsync(memoryStream);
                     var file = new AppFile
                     {
                         OwnerId = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier).Value,
-                        TopicId = request.TopicId,
+                        TopicId = int.Parse(Request.Form.FirstOrDefault(k => k.Key == "TopicId").Value),
                         Content = memoryStream.ToArray()
                     };
 
