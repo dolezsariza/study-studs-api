@@ -20,6 +20,8 @@ namespace StudyStud.Models
         public string Description { get; set; }
         public DateTime Date { get; set; }
 
+        public List<AppFile> Files { get; set; }
+
         public Topic()
         {
             Date = DateTime.Now;

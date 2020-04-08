@@ -34,7 +34,7 @@ namespace StudyStud.Controllers
             {
 
                 Console.WriteLine(e.StackTrace);
-                return StatusCode(204);
+                return NoContent();
             }
         }
 
@@ -50,11 +50,10 @@ namespace StudyStud.Controllers
                 topic.OwnerName = userName;
                 _context.TopicList.Add(topic);
                 await _context.SaveChangesAsync();
-                return Ok();
+                return Created("","");
             }
-            catch (Exception e)
+            catch (DbUpdateException e)
             {
-                Console.WriteLine(e.StackTrace);
                 return StatusCode(406);
             }
         }
@@ -71,7 +70,7 @@ namespace StudyStud.Controllers
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
-                return StatusCode(204);
+                return NoContent();
             }
         }
 
@@ -149,5 +148,13 @@ namespace StudyStud.Controllers
                 return StatusCode(406);
             }
         }
+
+        [HttpGet("{topicId}/files")]
+        public async Task<IActionResult> GetFiles (int topicId)
+        {
+            var files = await _context.FileList.Where(file => file.TopicId == topicId).Select(f => new TopicGetFiles { FileName = f.FileName, Id = f.Id}).ToListAsync();
+            return Ok(files);
+        }
+
     }
 }

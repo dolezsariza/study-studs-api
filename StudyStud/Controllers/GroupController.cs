@@ -137,7 +137,7 @@ namespace StudyStud.Controllers
             }
         }
 
-        [HttpPost("{groupId}/addtopic")]
+        [HttpPost("{groupId}")]
         public async Task<ActionResult> AddTopicToGroup(int groupId, [FromBody]Topic ntopic)
         {
             var topic = await _context.TopicList.SingleOrDefaultAsync(t => t.Id == ntopic.Id);
