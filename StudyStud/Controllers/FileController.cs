@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +19,7 @@ namespace StudyStud.Controllers
     public class FileController : ControllerBase
     {
         private readonly StudyDbContext _context;
+        private readonly string[] permittedExtensions = { ".txt", ".jpg", ".png", ".pdf" };
 
         public FileController(StudyDbContext context)
         {
@@ -27,15 +29,24 @@ namespace StudyStud.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadFile()
         {
+            var formFile = Request.Form.Files[0];
+            var filename = Request.Form.FirstOrDefault(k => k.Key == "FileName").Value;
+            var ext = Path.GetExtension(filename).ToLowerInvariant();
+
+            if (string.IsNullOrEmpty(ext) || !permittedExtensions.Contains(ext))
+            {
+                return BadRequest("Invalid file extension");
+            }
+
             try
             {
                 
                 using (var memoryStream = new MemoryStream())
                 {
-                    await Request.Form.Files[0].CopyToAsync(memoryStream);
+                    await formFile.CopyToAsync(memoryStream);
                     var file = new AppFile
                     {
-                        FileName = Request.Form.FirstOrDefault(k => k.Key == "FileName").Value,
+                        FileName = WebUtility.HtmlEncode(filename),
                         OwnerId = User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier).Value,
                         TopicId = int.Parse(Request.Form.FirstOrDefault(k => k.Key == "TopicId").Value),
                         Content = memoryStream.ToArray()
@@ -56,15 +67,14 @@ namespace StudyStud.Controllers
         public async Task<IActionResult> DownloadFile(int id)
         {
             var file = await _context.FileList.FirstOrDefaultAsync(f => f.Id == id);
-            Stream stream = new MemoryStream(file.Content);
 
-            if(stream == null)
+            if (file == null)
                 return NotFound();
 
+            file.FileName = WebUtility.HtmlDecode(file.FileName);
+            Stream stream = new MemoryStream(file.Content);
             var provider = new FileExtensionContentTypeProvider();
-            string contentType;
-
-            if (!provider.TryGetContentType(file.FileName, out contentType))
+            if (!provider.TryGetContentType(file.FileName, out string contentType))
             {
                 contentType = "application/octet-stream";
             }
@@ -73,6 +83,30 @@ namespace StudyStud.Controllers
             {
                 FileDownloadName = file.FileName
             };
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFile(int id)
+        {
+            var file = await _context.FileList.FirstOrDefaultAsync(f => f.Id == id);
+
+            if (file == null)
+                return NotFound("The file is not in the database");
+
+            if (file.OwnerId != User.Claims.FirstOrDefault(claim => claim.Type == ClaimTypes.NameIdentifier).Value)
+                return BadRequest("You don't have the rights to do this.");
+
+            try
+            {
+                _context.FileList.Remove(file);
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(406);
+            }
+
         }
     }
 }
