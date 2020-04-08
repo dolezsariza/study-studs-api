@@ -45,6 +45,20 @@ namespace StudyStud.Controllers
             return Ok(group);
         }
 
+        [HttpGet("groupusers")]
+        public async Task<ActionResult> GetAllGroupUsers()
+        {
+            var groupUsers = await _context.GroupUsers.ToListAsync();
+            return Ok(groupUsers);
+        }
+
+        [HttpGet("{id}/groupusers")]
+        public async Task<ActionResult> GetGroupUsersOfUser(string id)
+        {
+            var groupUsers = await _context.GroupUsers.Where(gu => gu.UserId == id).ToListAsync();
+            return Ok(groupUsers);
+        }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> ModifyGroup(int id,[FromBody]Group modifiedGroup)
         {
