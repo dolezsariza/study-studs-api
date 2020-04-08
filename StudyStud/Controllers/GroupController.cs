@@ -137,6 +137,32 @@ namespace StudyStud.Controllers
             }
         }
 
+        [HttpDelete("{groupId}/leave")]
+        public async Task<ActionResult> LeaveGroup(int groupId)
+        {
+            try
+            {
+                var user = await _context.UserList.SingleOrDefaultAsync(u => u.UserName == GetUserName());
+
+                var groupUser = await _context.GroupUsers.SingleOrDefaultAsync(g => g.UserId == user.Id && g.GroupId == groupId);
+
+                if (user == null || groupUser == null)
+                {
+                    return NotFound();
+                }
+
+                _context.GroupUsers.Remove(groupUser);
+                
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+
+                return StatusCode(505);
+            }
+        }
+
         [HttpPost("{groupId}")]
         public async Task<ActionResult> AddTopicToGroup(int groupId, [FromBody]Topic ntopic)
         {
