@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace StudyStud.Models
 {
-    public class User : IdentityUser
+    public class Profile
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -14,6 +15,5 @@ namespace StudyStud.Models
         public string School { get; set; }
         public string City { get; set; }
         public string ProfilePicture { get; set; }
-        public List<GroupUser> GroupUsers { get; set; }
     }
 }

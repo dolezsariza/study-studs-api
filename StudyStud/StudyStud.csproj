@@ -5,12 +5,37 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20200224135235_UserIdString.cs" />
+    <Compile Remove="Migrations\20200224135235_UserIdString.Designer.cs" />
+    <Compile Remove="Migrations\20200225090323_TopicPost.cs" />
+    <Compile Remove="Migrations\20200225090323_TopicPost.Designer.cs" />
+    <Compile Remove="Migrations\20200225094005_TopicPost.cs" />
+    <Compile Remove="Migrations\20200225094005_TopicPost.Designer.cs" />
+    <Compile Remove="Migrations\20200225094315_TopicPost.cs" />
+    <Compile Remove="Migrations\20200225094315_TopicPost.Designer.cs" />
+    <Compile Remove="Migrations\20200225095618_FixedDB.cs" />
+    <Compile Remove="Migrations\20200225095618_FixedDB.Designer.cs" />
+    <Compile Remove="Migrations\20200226134958_revert.cs" />
+    <Compile Remove="Migrations\20200226134958_revert.Designer.cs" />
+    <Compile Remove="Migrations\20200311102233_Add Group to database.cs" />
+    <Compile Remove="Migrations\20200311102233_Add Group to database.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
