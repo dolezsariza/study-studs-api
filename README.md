@@ -16,4 +16,4 @@ Contributors:
 - Izabella Dolezsár 
 - Máté Iszlai
 
-The application's frontend API can be found [here](https://hodaszAbel@dev.azure.com/hodaszAbel/ASP%20.NET%20-%20React%20-%20Social%20Media/_git/study-stud-react).
+The application's frontend API can be found [here](https://hodaszAbel@dev.azure.com/hodaszAbel/ASP%20.NET%20-%20React%20-%20Social%20Media/_git/study-stud-react) on Azure, and [here](https://github.com/dolezsariza/study-studs-react) on GitHub.
