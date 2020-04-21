@@ -10,4 +10,10 @@ Technologies used:
 -   [Entity Framework]
 -   [Identity]
 
+Contributors:
+- Ábel Hodász
+- Gyula Gergely Hódosi
+- Izabella Dolezsár 
+- Máté Iszlai
+
 The application's frontend API can be found [here](https://hodaszAbel@dev.azure.com/hodaszAbel/ASP%20.NET%20-%20React%20-%20Social%20Media/_git/study-stud-react).
